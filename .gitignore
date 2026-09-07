@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.env
+/content/
+test_data/
+outputs/
+resultados_acta.xlsx
