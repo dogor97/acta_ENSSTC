@@ -13,6 +13,7 @@ class ClassReport:
     """All report tables and metadata for one grade section."""
 
     grade: str
+    grade_number: int | None
     section: str
     sheet_name: str
     period: str | None
@@ -30,6 +31,7 @@ class ClassReport:
     def as_dict(self) -> dict[str, Any]:
         return {
             "grade": self.grade,
+            "grade_number": self.grade_number,
             "section": self.section,
             "sheet_name": self.sheet_name,
             "period": self.period,

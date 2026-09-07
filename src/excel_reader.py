@@ -10,7 +10,7 @@ from typing import Any
 
 import pandas as pd
 
-from .config import GRADE_NUMBERS, GRADES, PERIODS, SUBJECTS
+from .config import GRADE_NUMBERS, GRADE_TO_NUMBER, GRADES, PERIODS, SUBJECTS
 from .grade_analysis import analyze_grades
 from .report_models import ClassReport
 from .report_validation import validate_results
@@ -150,6 +150,7 @@ class XLSFormatter:
         self.sheet_number = sheet_number
         self.sheet_name = sheet_name or str(sheet_number)
         self.grade_id: int | None = None
+        self.grade_number: int | None = None
         self.grade_number_id: int | None = None
         self.period_id: str | None = None
         self.grade: str | None = None
@@ -169,6 +170,7 @@ class XLSFormatter:
             )
             self.grade = _find_grade(header_text, self.sheet_name)
             self.section = _find_section(header_text, self.sheet_name)
+            self.grade_number = GRADE_TO_NUMBER.get(self.grade) if self.grade else None
             period_text = next(
                 str(value) for value in raw.iloc[:, 0]
                 if str(value).strip().lower().startswith("periodo")
@@ -195,6 +197,7 @@ class XLSFormatter:
         header_text = str(raw.iloc[0, 0])
         self.grade = _find_grade(header_text, self.sheet_name)
         self.section = _find_section(header_text, self.sheet_name)
+        self.grade_number = GRADE_TO_NUMBER.get(self.grade) if self.grade else None
         self.grade_id = next(
             (index for index, grade in enumerate(GRADES) if grade == self.grade),
             None,
@@ -258,6 +261,7 @@ def analyze_workbook(
         sheets_by_class.setdefault(class_key, []).append(sheet_name)
         results.setdefault(formatter.grade, {})[formatter.section] = ClassReport(
             grade=formatter.grade,
+            grade_number=formatter.grade_number,
             section=formatter.section,
             sheet_name=sheet_name,
             period=formatter.period_id,

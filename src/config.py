@@ -4,6 +4,7 @@ GRADES = [
     "PREESCOLAR", "PRIMERO", "SEGUNDO", "TERCERO", "CUARTO", "QUINTO",
     "SEXTO", "SÉPTIMO", "OCTAVO", "NOVENO", "DÉCIMO", "ONCE",
 ]
+GRADE_TO_NUMBER = {grade: index for index, grade in enumerate(GRADES)}
 GRADE_NUMBERS = ["UNO", "DOS", "TRES", "CUATRO", "CINCO"]
 PERIODS = ["1/4", "2/4", "3/4", "4/4"]
 SUBJECTS = [

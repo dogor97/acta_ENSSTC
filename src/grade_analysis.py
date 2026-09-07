@@ -60,6 +60,12 @@ def analyze_grades(
     failed_subject_counts = {
         subject: len(students) for subject, students in failed_by_subject.items()
     }
+    failed_subject_counts = dict(
+        sorted(failed_subject_counts.items(), key=lambda item: item[1], reverse=True)
+    )
+    failed_by_subject = {
+        subject: failed_by_subject[subject] for subject in failed_subject_counts
+    }
     failed_per_subject = pd.DataFrame({
         "Cantidad de estudiantes que pierden": failed_subject_counts,
         "Estudiantes": failed_by_subject,
@@ -72,5 +78,8 @@ def analyze_grades(
             lambda row: row.index[row].tolist(), axis=1
         ),
     })
+    failed_per_student = failed_per_student.sort_values(
+        "Materias perdidas", ascending=False, kind="stable"
+    )
 
     return summary, percentages, best_students, failed_per_subject, failed_per_student

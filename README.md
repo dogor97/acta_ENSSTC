@@ -12,6 +12,7 @@ summaries for the ENSSTC acta workflow.
 - `src/report_models.py`: structured metadata and report objects.
 - `src/report_validation.py`: validation for workbook and class reports.
 - `src/report_export.py`: Excel export for checking results before Word generation.
+- `src/word_export.py`: Word report generation using the institutional template.
 - `requirements.txt`: Python dependencies.
 
 ## Colab setup
@@ -79,3 +80,20 @@ export_excel(results, "/content/drive/MyDrive/Normal/notas/resultados_acta.xlsx"
 Each class gets worksheets for performance counts, percentages, top students,
 failed students by subject, and failed subjects by student. The same `results`
 objects will later be used by the Word exporter.
+
+## Generate the Word report locally
+
+The institutional template is stored at
+`template/template-ACTA DE COMISION DE EVALUACION ENSSTC.docx`.
+
+```python
+from src.word_export import export_word
+
+output_path = project_root / "output" / "acta_comision_local.docx"
+export_word(
+	results,
+	project_root / "template" / "template-ACTA DE COMISION DE EVALUACION ENSSTC.docx",
+	output_path,
+)
+print(f"Word report written to: {output_path.resolve()}")
+```
