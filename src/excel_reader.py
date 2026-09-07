@@ -55,7 +55,7 @@ def _read_spreadsheetml_sheet(path: str | Path, sheet_number: int) -> pd.DataFra
 def _workbook_sheet_names(path: str | Path) -> list[str]:
     if _is_spreadsheetml(path):
         return [sheet.get(f"{SS}Name", "") for sheet in _spreadsheetml_sheets(path)]
-    return pd.ExcelFile(path).sheet_names
+    return [str(name) for name in pd.ExcelFile(path).sheet_names]
 
 
 def _normalized_text(value: str) -> str:
@@ -111,7 +111,8 @@ def _format_spreadsheetml(
 ) -> pd.DataFrame:
     raw = _read_spreadsheetml_sheet(path, sheet_number)
     period_row = next(
-        index for index, value in raw.iloc[:, 0].items()
+        index
+        for index, value in enumerate(raw.iloc[:, 0])
         if str(value).strip().lower().startswith("periodo")
     )
     names_row = next(
@@ -120,8 +121,9 @@ def _format_spreadsheetml(
                for value in raw.iloc[index].tolist())
     )
     values_row = names_row + 1
-    selected_columns = [
-        column for column, value in raw.iloc[values_row].items()
+    selected_columns: list[int] = [
+        column
+        for column, value in enumerate(raw.iloc[values_row])
         if column == 0 or period_id in str(value)
     ]
     available_subjects = [
@@ -235,10 +237,10 @@ def analyze_workbook(
     path: str,
     expected_grades: tuple[str, ...] | None = None,
     expected_sections: tuple[str, ...] | None = None,
-) -> tuple[dict[str, dict[str, dict[str, Any]]], dict[str, Any]]:
+) -> tuple[dict[str, dict[str, ClassReport]], dict[str, Any]]:
     """Analyze every workbook sheet and organize reports by grade and section."""
     sheet_names = _workbook_sheet_names(path)
-    results: dict[str, dict[str, dict[str, Any]]] = {}
+    results: dict[str, dict[str, ClassReport]] = {}
     sheets_by_class: dict[tuple[str, str], list[str]] = {}
 
     for sheet_number, sheet_name in enumerate(sheet_names, start=1):

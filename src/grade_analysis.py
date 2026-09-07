@@ -48,8 +48,8 @@ def analyze_grades(
     percentages.columns = [f"{column} (%)" for column in percentages.columns]
 
     averages = grades_without_behavior.mean(axis=1).astype(float)
-    best_students = grades_without_behavior.assign(Promedio=averages).nlargest(
-        3, "Promedio"
+    best_students = grades_without_behavior.assign(Promedio=averages).sort_values(
+        "Promedio", ascending=False
     )
 
     failed_mask = grades_without_behavior < SCORE_THRESHOLDS["bajo"]

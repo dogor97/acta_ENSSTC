@@ -3,5 +3,5 @@ __pycache__/
 .env
 /content/
 test_data/
-outputs/
+output/
 resultados_acta.xlsx
